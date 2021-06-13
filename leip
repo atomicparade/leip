@@ -1,0 +1,91 @@
+#!/bin/bash
+
+# List explicitly installed packages and their sizes, by install date
+# Output format: <Install date> <Size in MiB> <Package name> 
+
+version='leip 1.0'
+
+sort_options='-hk1' # Default: sort by install date
+
+help_text_short="\
+Usage: $(basename "$0") [OPTION]
+List explicitly installed packages that are not dependencies of other
+packages, along with their install date and size.\
+"
+
+help_text_long="\
+Usage: $(basename "$0") [OPTION]
+List explicitly installed packages that are not dependencies of other
+packages, along with their install date and size.
+
+Options:
+
+  -i, --sort-by-install-date    Sort by install date (default)
+  -s, --sort-by-size            Sort by size in MiB
+  -n, --sort-by-name            Sort by name
+  -h, --help                    Show this help text
+      --version                 Show program version\
+"
+
+if [[ "x$1" != "x" ]]
+then
+    case "$1" in
+        -i|--sort-by-install-date)
+        sort_options='-hk1'
+        ;;
+        -s|--sort-by-size)
+        sort_options='-hk2'
+        ;;
+        -n|--sort-by-name)
+        sort_options='-k3'
+        ;;
+        -h)
+        echo "$help_text_short"
+        exit
+        ;;
+        --help)
+        echo "$help_text_long"
+        exit
+        ;;
+        --version)
+        echo "$version"
+        exit
+        ;;
+        *)
+        echo "Unknown option '$1'; use --help to see options"
+        exit 1
+        ;;
+    esac
+fi
+
+if ! (which pacman >/dev/null 2>&1)
+then
+    echo 'This system does not appear to be using pacman'
+    exit 1
+fi
+
+if ! (which expac >/dev/null 2>&1)
+then
+    echo 'This script requires expac'
+    exit
+fi
+
+package_list=$(mktemp -t list-packages.XXXXXXXX)
+
+# Create list of installed packages
+expac -t '%Y-%m-%d' -H 'M' '%l\t%m\t%n' >>"$package_list"
+
+echo -e 'Installed\tSize    \tPackage name'
+
+# Get explicitly installed packages that are not dependencies of other packages
+# Drop the version and keep only the package name
+# Filter the list of installed packages to those that were explicitly installed
+# sort
+# Right-align package sizes
+pacman -Qet |
+    cut -d' ' -f1 |
+    xargs -I{} grep -P '\t{}$' "$package_list" |
+    sort -t$'\t' $sort_options |
+    awk -F$'\t' '{printf "%s\t%10s\t%s\n", $1, $2, $3}'
+
+rm "$package_list"
