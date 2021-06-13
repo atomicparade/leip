@@ -9,22 +9,19 @@ sort_options='-hk1' # Default: sort by install date
 
 help_text_short="\
 Usage: $(basename "$0") [OPTION]
-List explicitly installed packages that are not dependencies of other
-packages, along with their install date and size.\
+List explicitly installed pacman packages that are not dependencies of other
+packages, along with the install date and size.
 "
 
 help_text_long="\
-Usage: $(basename "$0") [OPTION]
-List explicitly installed packages that are not dependencies of other
-packages, along with their install date and size.
-
+$help_text_short
 Options:
 
   -i, --sort-by-install-date    Sort by install date (default)
   -s, --sort-by-size            Sort by size in MiB
   -n, --sort-by-name            Sort by name
   -h, --help                    Show this help text
-      --version                 Show program version\
+      --version                 Show program version
 "
 
 if [[ "x$1" != "x" ]]
@@ -40,11 +37,11 @@ then
         sort_options='-k3'
         ;;
         -h)
-        echo "$help_text_short"
+        echo -n "$help_text_short"
         exit
         ;;
         --help)
-        echo "$help_text_long"
+        echo -n "$help_text_long"
         exit
         ;;
         --version)
