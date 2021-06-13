@@ -1,5 +1,7 @@
 # leip
 
+[![MIT License](https://img.shields.io/badge/license-MIT-blue)](https://choosealicense.com/licenses/mit/)
+
 Lists explicitly installed [pacman](https://wiki.archlinux.org/title/Pacman)
 packages that are not dependencies of other packages, along with the install
 date and size.
