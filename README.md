@@ -11,7 +11,7 @@ it may not be the date that the package was originally instaleld onto the sytem.
 
 Requires [expac](https://github.com/falconindy/expac) (`# pacman -S expac`).
 
-Usage:
+## Usage
 
 ```
 leip [OPTION]
@@ -25,7 +25,7 @@ Options:
       --version                 Show program version
 ```
 
-Example output:
+## Example output
 
 ```
 Installed	Size    	Package name
